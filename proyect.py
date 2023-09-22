@@ -1,6 +1,9 @@
 #TRABAJO INFERENCIA SECCION 412 (?)
 #INTEGRANTES SEBASTIAN CASTRO, CARLOS PARADA, PABLO ZUÑIGA, DIEGO ADROVEZ.
+
 import pandas as pd 
+import numpy as np
+import matplotlib as mpl
 
 #Lectura de archivos csv 
 
@@ -12,16 +15,22 @@ bankdataadditionalfull = pd.read_csv("bank-additional-full.csv", sep=";")
 
 #print(bankdata.to_string())  #print de todo el dataframe 
 print("bank full csv:")
-print(bankdatafull.shape) 
+print(bankdatafull.shape)
+
 print("bank csv:")
 print(bankdata.shape) 
-print("bank additional csv:")
-print(bankdataadditional.shape) 
-print("bank additional full csv:")
-print(bankdataadditionalfull.shape) 
 
-bankdataadditionalfull.info()
+print("bank additional csv:")
+print(bankdataadditional.shape)
+
+print("bank additional full csv:")
+print(bankdataadditionalfull.shape)
+ 
+
+
 """
+DESCRIPCION DE LAS TABLAS FULL 
+
 #bankdatafull.info()
 (45211, 17)
 <class 'pandas.core.frame.DataFrame'>
@@ -79,4 +88,16 @@ Data columns (total 21 columns):
 dtypes: float64(5), int64(5), object(11)
 
 """
+"""
+# Verificar los valores faltantes en los DataFrame 
+print(bankdatafull.isnull().sum())
+print(bankdata.isnull().sum())
+print(bankdataadditional.isnull().sum())
+print(bankdataadditionalfull.isnull().sum())
+"""
+#Medidas tendencia central para bankdata 
+media_edad_bankdata = bankdata["age"].mean()
+mediana_edad_bankdata = bankdata["age"].median()
+moda_edad_bankdata = bankdata["age"].mode()
+print(media_edad_bankdata,mediana_edad_bankdata,moda_edad_bankdata)
 
