@@ -182,7 +182,7 @@ print('Funcion describe de los dos dataframes:')
 print(bankdatafull.describe())
 print(bankdataadditionalfull.describe())
 #Todas las columnas tienen una desviacion estandart diferente de 0 lo que significa que los datos de cada dataframe no son iguales
-
+'''
 
 print("bank full csv (SHAPE 2):")
 print(bankdatafull.shape)
@@ -190,7 +190,7 @@ print("bank additional full csv(SHAPE 2):")
 print(bankdataadditionalfull.shape)
 #= GRAFICOS PARA BANKDATAFULL 
 # Lista de columnas numéricas
-cols_num = ['age', 'balance', 'day', 'duration', 'campaign', 'pdays', 'previous']
+cols_num_bankdatafull = ['age', 'balance', 'day', 'duration', 'campaign', 'pdays', 'previous']
  
 # Ajusta el tamaño de la figura para dar más espacio vertical
 fig, ax = plt.subplots(nrows=7, ncols=1, figsize=(8, 40))  # Aumenta el valor de 'figsize'
@@ -199,7 +199,7 @@ fig, ax = plt.subplots(nrows=7, ncols=1, figsize=(8, 40))  # Aumenta el valor de
 fig.subplots_adjust(hspace=2)  # Aumenta el valor de 'hspace'
 
 # Genera gráficos de caja para cada variable numérica
-for i, col in enumerate(cols_num):
+for i, col in enumerate(cols_num_bankdatafull):
     sns.boxplot(x=bankdatafull[col], ax=ax[i])
     ax[i].set_title(col)
 
@@ -213,14 +213,49 @@ for col in cols_cat_bankdata:
     plt.title(f'Gráfico de barras para {col}')
     plt.xticks(rotation=45)  # Rota las etiquetas del eje x para mejorar la legibilidad
     plt.show()  # Muestra el gráfico actual y espera hasta que se cierre antes de continuar con el siguiente
+''' 
+#COMENTARIOS PARA LOS DATOS DE ARRIBA ... 
 
 #GRAFICOS PARA BANKDATAADDITIONALFULL 
 
+# Lista de columnas numéricas
+cols_num_bankdataadditionalfull = ['age', 'duration', 'campaign', 'pdays', 'previous']
+cols_float_bankdataadditionalfull = ['emp.var.rate', 'cons.price.idx', 'cons.conf.idx', 'euribor3m', 'nr.employed']
+# Ajusta el tamaño de la figura para dar más espacio vertical
+fig, ax = plt.subplots(nrows=len(cols_num_bankdataadditionalfull), ncols=1, figsize=(8, 8 * len(cols_num_bankdataadditionalfull))) 
 
+# Aumenta el espacio vertical entre subplots
+fig.subplots_adjust(hspace=2)
 
+# Genera gráficos de caja para cada variable numérica
+for i, col in enumerate(cols_num_bankdataadditionalfull):
+    sns.boxplot(x=bankdataadditionalfull[col], ax=ax[i])
+    ax[i].set_title(col)
 
+# Muestra los gráficos
+plt.show()
 
+# Ajusta el tamaño de la figura para dar más espacio vertical
+fig, ax = plt.subplots(nrows=len(cols_float_bankdataadditionalfull), ncols=1, figsize=(8, 8 * len(cols_num_bankdataadditionalfull))) 
 
+# Aumenta el espacio vertical entre subplots
+fig.subplots_adjust(hspace=2)
+
+# Genera gráficos de caja para cada variable numérica
+for i, col in enumerate(cols_float_bankdataadditionalfull):
+    sns.boxplot(x=bankdataadditionalfull[col], ax=ax[i])
+    ax[i].set_title(col)
+
+# Muestra los gráficos
+plt.show()
+
+# Genera gráficos de barras para cada columna categórica por separado
+for col in cols_cat_bankdataadd:
+    plt.figure(figsize=(8, 6))  # Tamaño de la figura
+    sns.countplot(x=col, data=bankdataadditionalfull)
+    plt.title(f'Gráfico de barras para {col}')
+    plt.xticks(rotation=45)  # Rota las etiquetas del eje x para mejorar la legibilidad
+    plt.show()  # Muestra el gráfico actual y espera hasta que se cierre antes de continuar con el siguiente
 
 
 
@@ -229,55 +264,6 @@ for col in cols_cat_bankdata:
 
 ''' 
 #(EXPLORACION DE DATOS)
-# 1. Resumen estadístico inicial
-
-print(bankdatafull.describe())
-
-# 2. Distribución de variables numéricas
-plt.figure(figsize=(12, 6))
-plt.subplot(1, 2, 1)
-sns.histplot(bankdatafull['age'], bins=20, kde=True)
-plt.title('Distribución de Edades')
-plt.subplot(1, 2, 2)
-sns.boxplot(x='balance', data=bankdatafull)
-plt.title('Boxplot de Saldo')
-plt.show()
-
-# 3. Distribución de variables categóricas
-plt.figure(figsize=(12, 6))
-plt.subplot(1, 2, 1)
-sns.countplot(x='job', data=bankdatafull)
-plt.xticks(rotation=90)
-plt.title('Distribución de Trabajos')
-plt.subplot(1, 2, 2)
-sns.countplot(x='marital', data=bankdatafull)
-plt.title('Distribución de Estados Civiles')
-plt.show()
-
-# 4. Relaciones entre variables
-plt.figure(figsize=(8, 6))
-sns.scatterplot(x='age', y='balance', data=bankdatafull)
-plt.title('Relación entre Edad y Saldo')
-plt.show()
-
-# 5. Correlaciones
-# Convertir columnas categóricas en variables ficticias
-bankdatafull = pd.get_dummies(bankdatafull, columns=['job', 'marital', 'education', 'default', 'housing', 'loan', 'contact', 'month', 'poutcome', 'y'])
-
-correlation_matrix = bankdatafull.corr()
-plt.figure(figsize=(10, 8))
-sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm')
-plt.title('Matriz de Correlación')
-plt.show()
-
-# 8. Análisis de valores atípicos
-plt.figure(figsize=(8, 6))
-sns.boxplot(x='duration', data=bankdatafull)
-plt.title('Boxplot de Duración de Llamada')
-plt.show()
-
-
-
 #(TRANSFORMACION DE DATOS)
 #(DIVISION DE DATOS)
 '''
