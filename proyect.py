@@ -4,7 +4,7 @@
 import pandas as pd 
 import numpy as np
 import matplotlib as mpl
-import matplotlib.pyplot as plt  # Agregar esta línea para importar Matplotlib
+import matplotlib.pyplot as plt  
 import seaborn as sns
 
 #Lectura de archivos csv 
@@ -19,9 +19,9 @@ bankdataadditional = pd.read_csv("bank-additional.csv", sep=";")
 bankdataadditionalfull = pd.read_csv("bank-additional-full.csv", sep=";")
 
 
-print("bank full csv (SHAPE):")
+print("bank full csv (SHAPE 1):")
 print(bankdatafull.shape)
-print("bank additional full csv(SHAPE):")
+print("bank additional full csv(SHAPE 1):")
 print(bankdataadditionalfull.shape)
 """
 repeticion de un 10% de cada dataframe
@@ -30,9 +30,6 @@ print(bankdata.shape)
 print("bank additional csv:")
 print(bankdataadditional.shape)
 """
-
-
-
 """
 DESCRIPCION DE LOS DATASET: 
 1) Bank full csv
@@ -159,21 +156,81 @@ DESCRIPCION DE LOS DATASET:
 #print(bankdatafull.isnull().sum())
 #print(bankdataadditionalfull.isnull().sum())
                                             
-
 #Identifica y elimina filas duplicadas
 bankdatafull.drop_duplicates(inplace=True) #elimina 0 filas
 bankdataadditionalfull.drop_duplicates(inplace=True) #elimina 12 filas 
+#Elimina columnas que no se usaran 
 
+#balance = 'balance'
+#bankdatafull.drop(balance, axis=1, inplace=True)
+# Conteo de los niveles en las diferentes columnas categóricas
+cols_cat_bankdata = ['job', 'marital', 'education', 'default', 'housing',
+       'loan', 'contact', 'month', 'poutcome', 'y']
+
+for col in cols_cat_bankdata:
+  print(f'Columna {col}: {bankdatafull[col].nunique()} subniveles')
+
+
+cols_cat_bankdataadd = ['job', 'marital', 'education', 'default', 'housing',
+       'loan', 'contact', 'month','day_of_week','poutcome','y']
+for col in cols_cat_bankdata:
+  print(f'Columna {col}: {bankdataadditionalfull[col].nunique()} subniveles')
+
+#Todas las columnas de tipo object tienen mas de un subnivel por lo que no eliminaremos ninguna
+#Revision a las columnas tipo int64 y float64
+print('Funcion describe de los dos dataframes:')
 print(bankdatafull.describe())
-
 print(bankdataadditionalfull.describe())
+#Todas las columnas tienen una desviacion estandart diferente de 0 lo que significa que los datos de cada dataframe no son iguales
 
 
+print("bank full csv (SHAPE 2):")
+print(bankdatafull.shape)
+print("bank additional full csv(SHAPE 2):")
+print(bankdataadditionalfull.shape)
+#= GRAFICOS PARA BANKDATAFULL 
+# Lista de columnas numéricas
+cols_num = ['age', 'balance', 'day', 'duration', 'campaign', 'pdays', 'previous']
+ 
+# Ajusta el tamaño de la figura para dar más espacio vertical
+fig, ax = plt.subplots(nrows=7, ncols=1, figsize=(8, 40))  # Aumenta el valor de 'figsize'
+
+# Aumenta el espacio vertical entre subplots
+fig.subplots_adjust(hspace=2)  # Aumenta el valor de 'hspace'
+
+# Genera gráficos de caja para cada variable numérica
+for i, col in enumerate(cols_num):
+    sns.boxplot(x=bankdatafull[col], ax=ax[i])
+    ax[i].set_title(col)
+
+# Muestra los gráficos
+plt.show()
+
+# Genera gráficos de barras para cada columna categórica por separado
+for col in cols_cat_bankdata:
+    plt.figure(figsize=(8, 6))  # Tamaño de la figura
+    sns.countplot(x=col, data=bankdatafull)
+    plt.title(f'Gráfico de barras para {col}')
+    plt.xticks(rotation=45)  # Rota las etiquetas del eje x para mejorar la legibilidad
+    plt.show()  # Muestra el gráfico actual y espera hasta que se cierre antes de continuar con el siguiente
+
+#GRAFICOS PARA BANKDATAADDITIONALFULL 
+
+
+
+
+
+
+
+
+
+
+
+
+''' 
 #(EXPLORACION DE DATOS)
-
-
-
 # 1. Resumen estadístico inicial
+
 print(bankdatafull.describe())
 
 # 2. Distribución de variables numéricas
@@ -220,5 +277,7 @@ plt.title('Boxplot de Duración de Llamada')
 plt.show()
 
 
+
 #(TRANSFORMACION DE DATOS)
 #(DIVISION DE DATOS)
+'''
