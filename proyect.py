@@ -186,6 +186,7 @@ print("bank full csv (SHAPE 2):")
 print(bankdatafull.shape)
 print("bank additional full csv(SHAPE 2):")
 print(bankdataadditionalfull.shape)
+
 #= GRAFICOS PARA BANKDATAFULL 
 # Lista de columnas numéricas
 cols_num_bankdatafull = ['age', 'balance', 'day', 'duration', 'campaign', 'pdays', 'previous']
@@ -262,8 +263,45 @@ for col in cols_cat_bankdataadd:
     plt.show()  # Muestra el gráfico actual y espera hasta que se cierre antes de continuar con el siguiente
 
 
-''' 
-#(EXPLORACION DE DATOS)
-#(TRANSFORMACION DE DATOS)
-#(DIVISION DE DATOS)
-'''
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler, LabelEncoder
+
+# Transformación de datos
+
+# Codificación de variables categóricas usando LabelEncoder
+label_encoder = LabelEncoder()
+for col in cols_cat_bankdata:
+    bankdatafull[col] = label_encoder.fit_transform(bankdatafull[col])
+
+for col in cols_cat_bankdataadd:
+    bankdataadditionalfull[col] = label_encoder.fit_transform(bankdataadditionalfull[col])
+
+# Normalización de las columnas numéricas usando StandardScaler
+scaler = StandardScaler()
+bankdatafull[cols_num_bankdatafull] = scaler.fit_transform(bankdatafull[cols_num_bankdatafull])
+bankdataadditionalfull[cols_num_bankdataadditionalfull] = scaler.fit_transform(bankdataadditionalfull[cols_num_bankdataadditionalfull])
+
+# División de datos en conjuntos de entrenamiento, validación y prueba
+X_full = bankdatafull.drop('y', axis=1)  # Variables predictoras
+y_full = bankdatafull['y']  # Variable objetivo
+X_add_full = bankdataadditionalfull.drop('y', axis=1)  # Variables predictoras
+y_add_full = bankdataadditionalfull['y']  # Variable objetivo
+
+# División de datos para bankdatafull
+X_train_full, X_temp_full, y_train_full, y_temp_full = train_test_split(X_full, y_full, test_size=0.4, random_state=42)
+X_val_full, X_test_full, y_val_full, y_test_full = train_test_split(X_temp_full, y_temp_full, test_size=0.5, random_state=42)
+
+# División de datos para bankdataadditionalfull
+X_train_add_full, X_temp_add_full, y_train_add_full, y_temp_add_full = train_test_split(X_add_full, y_add_full, test_size=0.4, random_state=42)
+X_val_add_full, X_test_add_full, y_val_add_full, y_test_add_full = train_test_split(X_temp_add_full, y_temp_add_full, test_size=0.5, random_state=42)
+
+# Verificación de las formas de los conjuntos de datos resultantes
+print("Shapes de conjuntos de datos para bankdatafull:")
+print("Entrenamiento:", X_train_full.shape, y_train_full.shape)
+print("Validación:", X_val_full.shape, y_val_full.shape)
+print("Prueba:", X_test_full.shape, y_test_full.shape)
+
+print("\nShapes de conjuntos de datos para bankdataadditionalfull:")
+print("Entrenamiento:", X_train_add_full.shape, y_train_add_full.shape)
+print("Validación:", X_val_add_full.shape, y_val_add_full.shape)
+print("Prueba:", X_test_add_full.shape, y_test_add_full.shape)
