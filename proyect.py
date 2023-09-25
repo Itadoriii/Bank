@@ -306,6 +306,7 @@ print("Entrenamiento:", X_train_add_full.shape, y_train_add_full.shape)
 print("Validación:", X_val_add_full.shape, y_val_add_full.shape)
 print("Prueba:", X_test_add_full.shape, y_test_add_full.shape)
 
+#division  de datos
 from sklearn.model_selection import train_test_split
 
 # División de datos para bankdatafull
@@ -326,3 +327,4 @@ print("\nShapes de conjuntos de datos para bankdataadditionalfull:")
 print("Entrenamiento:", X_train_add_full.shape, y_train_add_full.shape)
 print("Validación:", X_val_add_full.shape, y_val_add_full.shape)
 print("Prueba:", X_test_add_full.shape, y_test_add_full.shape)
+
