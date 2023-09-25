@@ -160,7 +160,6 @@ DESCRIPCION DE LOS DATASET:
 bankdatafull.drop_duplicates(inplace=True) #elimina 0 filas
 bankdataadditionalfull.drop_duplicates(inplace=True) #elimina 12 filas 
 #Elimina columnas que no se usaran 
-
 #balance = 'balance'
 #bankdatafull.drop(balance, axis=1, inplace=True)
 # Conteo de los niveles en las diferentes columnas categóricas
@@ -182,7 +181,6 @@ print('Funcion describe de los dos dataframes:')
 print(bankdatafull.describe())
 print(bankdataadditionalfull.describe())
 #Todas las columnas tienen una desviacion estandart diferente de 0 lo que significa que los datos de cada dataframe no son iguales
-'''
 
 print("bank full csv (SHAPE 2):")
 print(bankdatafull.shape)
@@ -213,8 +211,14 @@ for col in cols_cat_bankdata:
     plt.title(f'Gráfico de barras para {col}')
     plt.xticks(rotation=45)  # Rota las etiquetas del eje x para mejorar la legibilidad
     plt.show()  # Muestra el gráfico actual y espera hasta que se cierre antes de continuar con el siguiente
-''' 
+
 #COMENTARIOS PARA LOS DATOS DE ARRIBA ... 
+
+# Eliminar filas con "previous">100
+print(f'Tamaño del set antes de eliminar registros de previous: {bankdatafull.shape}')
+bankdatafull = bankdatafull[bankdatafull['previous']<=100]
+print(f'Tamaño del set después de eliminar registros de previous: {bankdatafull.shape}')
+
 
 #GRAFICOS PARA BANKDATAADDITIONALFULL 
 
@@ -256,10 +260,6 @@ for col in cols_cat_bankdataadd:
     plt.title(f'Gráfico de barras para {col}')
     plt.xticks(rotation=45)  # Rota las etiquetas del eje x para mejorar la legibilidad
     plt.show()  # Muestra el gráfico actual y espera hasta que se cierre antes de continuar con el siguiente
-
-
-
-
 
 
 ''' 
