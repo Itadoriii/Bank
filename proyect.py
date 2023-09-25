@@ -305,3 +305,26 @@ print("\nShapes de conjuntos de datos para bankdataadditionalfull:")
 print("Entrenamiento:", X_train_add_full.shape, y_train_add_full.shape)
 print("Validación:", X_val_add_full.shape, y_val_add_full.shape)
 print("Prueba:", X_test_add_full.shape, y_test_add_full.shape)
+
+#division  de datos
+from sklearn.model_selection import train_test_split
+
+# División de datos para bankdatafull
+X_train_full, X_temp_full, y_train_full, y_temp_full = train_test_split(X_full, y_full, test_size=0.4, random_state=42)
+X_val_full, X_test_full, y_val_full, y_test_full = train_test_split(X_temp_full, y_temp_full, test_size=0.5, random_state=42)
+
+# División de datos para bankdataadditionalfull
+X_train_add_full, X_temp_add_full, y_train_add_full, y_temp_add_full = train_test_split(X_add_full, y_add_full, test_size=0.4, random_state=42)
+X_val_add_full, X_test_add_full, y_val_add_full, y_test_add_full = train_test_split(X_temp_add_full, y_temp_add_full, test_size=0.5, random_state=42)
+
+# Verificación de las formas de los conjuntos de datos resultantes
+print("Shapes de conjuntos de datos para bankdatafull:")
+print("Entrenamiento:", X_train_full.shape, y_train_full.shape)
+print("Validación:", X_val_full.shape, y_val_full.shape)
+print("Prueba:", X_test_full.shape, y_test_full.shape)
+
+print("\nShapes de conjuntos de datos para bankdataadditionalfull:")
+print("Entrenamiento:", X_train_add_full.shape, y_train_add_full.shape)
+print("Validación:", X_val_add_full.shape, y_val_add_full.shape)
+print("Prueba:", X_test_add_full.shape, y_test_add_full.shape)
+
