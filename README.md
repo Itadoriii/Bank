@@ -6,4 +6,6 @@ Trabajo para el ramo inferencia y procesos estocasticos.
   - pip install pandas  https://pandas.pydata.org/docs/
   - pip install matplotlib https://matplotlib.org/stable/index.html
   - pip install seaborn https://seaborn.pydata.org/installing.html
+  - pip install scikit-learn
+
  
