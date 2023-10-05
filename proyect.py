@@ -306,25 +306,123 @@ print("Entrenamiento:", X_train_add_full.shape, y_train_add_full.shape)
 print("Validación:", X_val_add_full.shape, y_val_add_full.shape)
 print("Prueba:", X_test_add_full.shape, y_test_add_full.shape)
 
-#division  de datos
-from sklearn.model_selection import train_test_split
 
-# División de datos para bankdatafull
-X_train_full, X_temp_full, y_train_full, y_temp_full = train_test_split(X_full, y_full, test_size=0.4, random_state=42)
-X_val_full, X_test_full, y_val_full, y_test_full = train_test_split(X_temp_full, y_temp_full, test_size=0.5, random_state=42)
+from sklearn.neural_network import MLPClassifier
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 
-# División de datos para bankdataadditionalfull
-X_train_add_full, X_temp_add_full, y_train_add_full, y_temp_add_full = train_test_split(X_add_full, y_add_full, test_size=0.4, random_state=42)
-X_val_add_full, X_test_add_full, y_val_add_full, y_test_add_full = train_test_split(X_temp_add_full, y_temp_add_full, test_size=0.5, random_state=42)
+# Crear un modelo MLP
+mlp_model = MLPClassifier(hidden_layer_sizes=(64, 32), activation='relu', solver='adam', max_iter=1000, random_state=42)
 
-# Verificación de las formas de los conjuntos de datos resultantes
-print("Shapes de conjuntos de datos para bankdatafull:")
-print("Entrenamiento:", X_train_full.shape, y_train_full.shape)
-print("Validación:", X_val_full.shape, y_val_full.shape)
-print("Prueba:", X_test_full.shape, y_test_full.shape)
+# Entrenar el modelo con los datos de entrenamiento
+mlp_model.fit(X_train_full, y_train_full)
 
-print("\nShapes de conjuntos de datos para bankdataadditionalfull:")
-print("Entrenamiento:", X_train_add_full.shape, y_train_add_full.shape)
-print("Validación:", X_val_add_full.shape, y_val_add_full.shape)
-print("Prueba:", X_test_add_full.shape, y_test_add_full.shape)
+# Validación del modelo en el conjunto de validación
+y_val_pred = mlp_model.predict(X_val_full)
 
+# Calcular la precisión en el conjunto de validación
+accuracy = accuracy_score(y_val_full, y_val_pred)
+print(f'Precisión en el conjunto de validación: {accuracy:.2f}')
+
+# Mostrar informe de clasificación (precision, recall, f1-score, etc.)
+classification_rep = classification_report(y_val_full, y_val_pred)
+print("Informe de clasificación en el conjunto de validación:")
+print(classification_rep)
+
+# Mostrar matriz de confusión
+confusion_mat = confusion_matrix(y_val_full, y_val_pred)
+print("Matriz de confusión en el conjunto de validación:")
+print(confusion_mat)
+
+# Pruebas preliminares en el conjunto de prueba
+y_test_pred = mlp_model.predict(X_test_full)
+
+# Calcular la precisión en el conjunto de prueba
+accuracy_test = accuracy_score(y_test_full, y_test_pred)
+print(f'Precisión en el conjunto de prueba: {accuracy_test:.2f}')
+
+
+
+from sklearn.model_selection import GridSearchCV
+
+# Definir cuadrícula de hiperparámetros a explorar
+param_grid = {
+    'hidden_layer_sizes': [(64, 32), (128, 64), (64, 64, 32)],
+    'activation': ['relu', 'tanh'],
+    'alpha': [0.0001, 0.001, 0.01],
+    'max_iter': [1000, 2000]
+}
+
+# Crear un objeto GridSearchCV
+grid_search = GridSearchCV(MLPClassifier(random_state=42), param_grid, cv=3, n_jobs=-1)
+
+# Realizar la búsqueda en los datos de entrenamiento
+grid_search.fit(X_train_full, y_train_full)
+
+# Mostrar los hiperparámetros óptimos
+print("Mejores hiperparámetros encontrados:")
+print(grid_search.best_params_)
+
+from sklearn.model_selection import cross_val_score
+
+# Crear un modelo con los mejores hiperparámetros encontrados
+best_mlp_model = grid_search.best_estimator_
+
+# Realizar validación cruzada
+cv_scores = cross_val_score(best_mlp_model, X_train_full, y_train_full, cv=5)
+
+# Mostrar los puntajes de validación cruzada
+print("Puntajes de Validación Cruzada:")
+print(cv_scores)
+print(f"Precisión media: {cv_scores.mean():.2f}")
+
+from sklearn.metrics import precision_score, recall_score, f1_score, confusion_matrix
+
+# Validación
+y_val_pred = best_mlp_model.predict(X_val_full)
+precision_val = precision_score(y_val_full, y_val_pred)
+recall_val = recall_score(y_val_full, y_val_pred)
+f1_val = f1_score(y_val_full, y_val_pred)
+confusion_mat_val = confusion_matrix(y_val_full, y_val_pred)
+
+print("Métricas en el conjunto de validación:")
+print(f"Precisión: {precision_val:.2f}")
+print(f"Recuperación: {recall_val:.2f}")
+print(f"Puntuación F1: {f1_val:.2f}")
+print("Matriz de confusión en validación:")
+print(confusion_mat_val)
+
+# Prueba
+y_test_pred = best_mlp_model.predict(X_test_full)
+precision_test = precision_score(y_test_full, y_test_pred)
+recall_test = recall_score(y_test_full, y_test_pred)
+f1_test = f1_score(y_test_full, y_test_pred)
+confusion_mat_test = confusion_matrix(y_test_full, y_test_pred)
+
+print("\nMétricas en el conjunto de prueba:")
+print(f"Precisión: {precision_test:.2f}")
+print(f"Recuperación: {recall_test:.2f}")
+print(f"Puntuación F1: {f1_test:.2f}")
+print("Matriz de confusión en prueba:")
+print(confusion_mat_test)
+
+# Entrenar el modelo con los mejores hiperparámetros
+best_mlp_model.fit(X_train_full, y_train_full)
+
+# Obtener las curvas de pérdida
+loss_curve = best_mlp_model.loss_curve_
+
+# Trazar la curva de pérdida
+plt.plot(loss_curve)
+plt.title("Curva de Pérdida durante el Entrenamiento")
+plt.xlabel("Número de Iteraciones")
+plt.ylabel("Pérdida")
+plt.show()
+""" 
+import joblib
+
+# Guardar el modelo en un archivo
+joblib.dump(best_mlp_model, 'modelo_mlp_entrenado.pkl')
+
+# Cargar el modelo en el futuro
+loaded_model = joblib.load('modelo_mlp_entrenado.pkl')
+"""
