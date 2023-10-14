@@ -417,7 +417,7 @@ plt.title("Curva de Pérdida durante el Entrenamiento")
 plt.xlabel("Número de Iteraciones")
 plt.ylabel("Pérdida")
 plt.show()
-""" 
+
 import joblib
 
 # Guardar el modelo en un archivo
@@ -425,4 +425,3 @@ joblib.dump(best_mlp_model, 'modelo_mlp_entrenado.pkl')
 
 # Cargar el modelo en el futuro
 loaded_model = joblib.load('modelo_mlp_entrenado.pkl')
-"""
