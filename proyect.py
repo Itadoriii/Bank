@@ -422,4 +422,4 @@ import joblib
 
 # Guardar el modelo en un archivo
 joblib.dump(best_mlp_model, 'modelo_mlp_entrenado.pkl')
-print(prediccion)
+
