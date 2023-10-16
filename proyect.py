@@ -1,17 +1,22 @@
 #TRABAJO INFERENCIA SECCION 412 (?)
 #INTEGRANTES SEBASTIAN CASTRO, CARLOS PARADA, PABLO ZUÑIGA, DIEGO ADROVEZ.
 
-import pandas as pd 
+from sklearn.neural_network import MLPClassifier
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+from sklearn.model_selection import train_test_split, GridSearchCV, cross_val_score
+from sklearn.preprocessing import StandardScaler, LabelEncoder
+from sklearn.utils import resample
+from imblearn.over_sampling import SMOTE
+import joblib
 import numpy as np
-import matplotlib as mpl
-import matplotlib.pyplot as plt  
+import matplotlib.pyplot as plt
 import seaborn as sns
-
+import pandas as pd
 #Lectura de archivos csv 
 #(RECOLECCION DE DATOS)
 
 #Created by: Paulo Cortez (Univ. Minho) and Sérgio Moro (ISCTE-IUL) @ 2012 
-bankdata = pd.read_csv("bank.csv", sep=";")
+
 bankdatafull = pd.read_csv("bank-full.csv", sep=";")
 
 #Created by: Sérgio Moro (ISCTE-IUL), Paulo Cortez (Univ. Minho) and Paulo Rita (ISCTE-IUL) @ 2014 
@@ -421,5 +426,51 @@ plt.show()
 import joblib
 
 # Guardar el modelo en un archivo
-joblib.dump(best_mlp_model, 'modelo_mlp_entrenado.pkl')
+#joblib.dump(best_mlp_model, 'modelo_mlp_entrenado.pkl')
 
+# Aumentar el número de neuronas y capas ocultas
+mlp_model = MLPClassifier(hidden_layer_sizes=(128, 64, 32), activation='relu', solver='adam', max_iter=1000, random_state=42)
+
+# Aumentar el número de iteraciones
+mlp_model = MLPClassifier(hidden_layer_sizes=(64, 32), activation='relu', solver='adam', max_iter=2000, random_state=42)
+
+# Agregar regularización (alpha)
+mlp_model = MLPClassifier(hidden_layer_sizes=(64, 32), activation='relu', solver='adam', max_iter=1000, alpha=0.001, random_state=42)
+
+# Realizar una búsqueda de hiperparámetros
+param_grid = {
+    'hidden_layer_sizes': [(64, 32), (128, 64, 32), (64, 64, 32)],
+    'activation': ['relu', 'tanh'],
+    'alpha': [0.0001, 0.001, 0.01],
+    'max_iter': [1000, 2000]
+}
+
+grid_search = GridSearchCV(MLPClassifier(random_state=42), param_grid, cv=3, n_jobs=-1)
+grid_search.fit(X_train_full, y_train_full)
+best_mlp_model = grid_search.best_estimator_
+
+# Aplicar sobremuestreo (SMOTE)
+from imblearn.over_sampling import SMOTE
+
+smote = SMOTE(random_state=42)
+X_train_full_resampled, y_train_full_resampled = smote.fit_resample(X_train_full, y_train_full)
+
+# Aplicar aumento de datos
+from sklearn.utils import resample
+
+X_train_minority = X_train_full[y_train_full == 1]
+y_train_minority = y_train_full[y_train_full == 1]
+
+X_train_minority_upsampled, y_train_minority_upsampled = resample(X_train_minority, y_train_minority, replace=True, n_samples=len(X_train_full[y_train_full == 0]), random_state=42)
+
+X_train_upsampled = np.vstack([X_train_full[y_train_full == 0], X_train_minority_upsampled])
+y_train_upsampled = np.hstack([y_train_full[y_train_full == 0], y_train_minority_upsampled])
+
+# Validación cruzada estratificada
+from sklearn.model_selection import StratifiedKFold
+
+cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+cv_scores = cross_val_score(best_mlp_model, X_train_full_resampled, y_train_full_resampled, cv=cv)
+
+# Guardar el modelo
+joblib.dump(best_mlp_model, 'modelo_mlp_entrenado.pkl')
