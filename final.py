@@ -4,6 +4,8 @@ from sklearn.metrics import accuracy_score, classification_report
 from sklearn.preprocessing import LabelEncoder
 import tkinter as tk
 from tkinter import ttk, scrolledtext
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import matplotlib.pyplot as plt
 
 # Carga el modelo entrenado
 loaded_model = joblib.load('modelo_mlp_entrenado.pkl')
@@ -21,7 +23,7 @@ tab_predicciones = ttk.Frame(tab_control)
 tab_control.add(tab_predicciones, text="Predicciones")
 
 # Crea un nuevo DataFrame con datos de ejemplo
-bankdata = pd.read_csv("bank-full.csv", sep=";")
+bankdata = pd.read_csv("bank.csv", sep=";")
 bankdata = bankdata.drop('y', axis=1)
 
 # Definir una función para codificar variables categóricas
