@@ -8,8 +8,8 @@ Trabajo para el ramo inferencia y procesos estocasticos.
   - pip install matplotlib https://matplotlib.org/stable/index.html
   - pip install seaborn https://seaborn.pydata.org/installing.html
   - pip install scikit-learn https://scikit-learn.org/stable/install.html
-  - pip intall joblib
-  - pip install imbalanced-learn
+  - pip intall joblib https://pypi.org/project/joblib/
+  - pip install imbalanced-learn https://imbalanced-learn.org/stable/install.html#getting-started
 
 
 
