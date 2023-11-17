@@ -1,6 +1,5 @@
 #TRABAJO INFERENCIA SECCION 412 (?)
 #INTEGRANTES SEBASTIAN CASTRO, CARLOS PARADA, PABLO ZUÑIGA, DIEGO ADROVEZ.
-
 from sklearn.neural_network import MLPClassifier
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 from sklearn.model_selection import train_test_split, GridSearchCV, cross_val_score
@@ -12,17 +11,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
-#Lectura de archivos csv 
+
 #(RECOLECCION DE DATOS)
-
 #Created by: Paulo Cortez (Univ. Minho) and Sérgio Moro (ISCTE-IUL) @ 2012 
-
 bankdatafull = pd.read_csv("bank-full.csv", sep=";")
 
 #Created by: Sérgio Moro (ISCTE-IUL), Paulo Cortez (Univ. Minho) and Paulo Rita (ISCTE-IUL) @ 2014 
-bankdataadditional = pd.read_csv("bank-additional.csv", sep=";")
 bankdataadditionalfull = pd.read_csv("bank-additional-full.csv", sep=";")
-
 
 print("bank full csv (SHAPE 1):")
 print(bankdatafull.shape)
@@ -164,7 +159,10 @@ DESCRIPCION DE LOS DATASET:
 #Identifica y elimina filas duplicadas
 bankdatafull.drop_duplicates(inplace=True) #elimina 0 filas
 bankdataadditionalfull.drop_duplicates(inplace=True) #elimina 12 filas 
-#Elimina columnas que no se usaran 
+
+#Elimina columnas que no se usaran (dejar los dataset con columnas similares)
+
+
 #balance = 'balance'
 #bankdatafull.drop(balance, axis=1, inplace=True)
 # Conteo de los niveles en las diferentes columnas categóricas
@@ -191,6 +189,53 @@ print("bank full csv (SHAPE 2):")
 print(bankdatafull.shape)
 print("bank additional full csv(SHAPE 2):")
 print(bankdataadditionalfull.shape)
+
+#calculo de medidas de tendencia central
+# Listas de columnas categóricas en ambos DataFrames
+cols_cat_bankdata = ['job', 'marital', 'education', 'default', 'housing', 'loan', 'contact', 'month', 'poutcome', 'y']
+cols_cat_bankdataadditional = ['job', 'marital', 'education', 'default', 'housing', 'loan', 'contact', 'month', 'day_of_week', 'poutcome', 'y']
+
+# Convertir columnas categóricas en columnas numéricas (one-hot encoding) para bankdatafull
+bankdatafull_encoded = pd.get_dummies(bankdatafull, columns=cols_cat_bankdata, drop_first=True)
+
+# Convertir columnas categóricas en columnas numéricas (one-hot encoding) para bankdataadditionalfull
+bankdataadditionalfull_encoded = pd.get_dummies(bankdataadditionalfull, columns=cols_cat_bankdataadditional, drop_first=True)
+
+# Mostrar las primeras filas de los nuevos DataFrames
+print("bankdatafull_encoded:")
+print(bankdatafull_encoded.head())
+
+print("\nbankdataadditionalfull_encoded:")
+print(bankdataadditionalfull_encoded.head())
+
+
+# Medidas de tendencia central para bankdatafull_encoded
+print("\nMedidas de tendencia central para bankdatafull_encoded:")
+media_full_encoded = bankdatafull_encoded.mean()
+mediana_full_encoded = bankdatafull_encoded.median()
+moda_full_encoded = bankdatafull_encoded.mode().iloc[0]  # Puede haber múltiples modas, tomamos la primera
+desviacion_std_full_encoded = bankdatafull_encoded.std()  # Agregamos el cálculo de la desviación estándar
+
+# Concatenar los resultados en un nuevo DataFrame para mayor claridad
+resultados_full_encoded = pd.concat([media_full_encoded, mediana_full_encoded, moda_full_encoded, desviacion_std_full_encoded], axis=1)
+resultados_full_encoded.columns = ['Media', 'Mediana', 'Moda', 'DesviacionStd']
+print(resultados_full_encoded)
+
+# Medidas de tendencia central para bankdataadditionalfull_encoded
+print("\nMedidas de tendencia central para bankdataadditionalfull_encoded:")
+media_additionalfull_encoded = bankdataadditionalfull_encoded.mean()
+mediana_additionalfull_encoded = bankdataadditionalfull_encoded.median()
+moda_additionalfull_encoded = bankdataadditionalfull_encoded.mode().iloc[0]  # Puede haber múltiples modas, tomamos la primera
+desviacion_std_additionalfull_encoded = bankdataadditionalfull_encoded.std()  # Agregamos el cálculo de la desviación estándar
+
+# Concatenar los resultados en un nuevo DataFrame para mayor claridad
+resultados_additionalfull_encoded = pd.concat([media_additionalfull_encoded, mediana_additionalfull_encoded, moda_additionalfull_encoded, desviacion_std_additionalfull_encoded], axis=1)
+resultados_additionalfull_encoded.columns = ['Media', 'Mediana', 'Moda', 'DesviacionStd']
+print(resultados_additionalfull_encoded)
+
+
+
+''' 
 
 #= GRAFICOS PARA BANKDATAFULL 
 # Lista de columnas numéricas
@@ -224,6 +269,8 @@ for col in cols_cat_bankdata:
 print(f'Tamaño del set antes de eliminar registros de previous: {bankdatafull.shape}')
 bankdatafull = bankdatafull[bankdatafull['previous']<=100]
 print(f'Tamaño del set después de eliminar registros de previous: {bankdatafull.shape}')
+
+
 
 
 #GRAFICOS PARA BANKDATAADDITIONALFULL 
@@ -425,17 +472,12 @@ plt.show()
 
 import joblib
 
-# Guardar el modelo en un archivo
-#joblib.dump(best_mlp_model, 'modelo_mlp_entrenado.pkl')
+
 
 # Aumentar el número de neuronas y capas ocultas
-mlp_model = MLPClassifier(hidden_layer_sizes=(128, 64, 32), activation='relu', solver='adam', max_iter=1000, random_state=42)
-
 # Aumentar el número de iteraciones
-mlp_model = MLPClassifier(hidden_layer_sizes=(64, 32), activation='relu', solver='adam', max_iter=2000, random_state=42)
-
 # Agregar regularización (alpha)
-mlp_model = MLPClassifier(hidden_layer_sizes=(64, 32), activation='relu', solver='adam', max_iter=1000, alpha=0.001, random_state=42)
+mlp_model = MLPClassifier(hidden_layer_sizes=(128,64,32), activation='relu', solver='adam', max_iter=2000, alpha=0.001, random_state=42)
 
 # Realizar una búsqueda de hiperparámetros
 param_grid = {
@@ -474,3 +516,4 @@ cv_scores = cross_val_score(best_mlp_model, X_train_full_resampled, y_train_full
 
 # Guardar el modelo
 joblib.dump(best_mlp_model, 'modelo_mlp_entrenado.pkl')
+'''
