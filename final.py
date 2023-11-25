@@ -22,8 +22,16 @@ tab_control = ttk.Notebook(window)
 tab_predicciones = ttk.Frame(tab_control)
 tab_control.add(tab_predicciones, text="Predicciones")
 
+# Crear una pestaña para Estadísticas
+tab_estadisticas = ttk.Frame(tab_control)
+tab_control.add(tab_estadisticas, text="Estadísticas")
+
+# Crear una pestaña para Gráficos
+tab_graficos = ttk.Frame(tab_control)
+tab_control.add(tab_graficos, text="Gráficos")
+
 # Crea un nuevo DataFrame con datos de ejemplo
-bankdata = pd.read_csv("bank.csv", sep=";")
+bankdata = pd.read_csv("bank-full.csv", sep=";")
 bankdata = bankdata.drop('y', axis=1)
 
 # Definir una función para codificar variables categóricas
@@ -44,6 +52,9 @@ bankdata_encoded = codificar_variables_categoricas(bankdata, label_encoder, cate
 predicciones = loaded_model.predict(bankdata_encoded)
 bankdata['prediccion'] = predicciones
 
+# Guardar las predicciones en un archivo CSV
+bankdata.to_csv('predicciones.csv', index=False)
+
 # Crear un cuadro de texto desplazable para mostrar los resultados de las predicciones
 text_area_predicciones = scrolledtext.ScrolledText(tab_predicciones, wrap=tk.WORD, width=60, height=20)
 text_area_predicciones.insert(tk.INSERT, "Resultados de las predicciones:\n")
@@ -51,10 +62,6 @@ text_area_predicciones.insert(tk.INSERT, bankdata[['age', 'job', 'marital', 'edu
 text_area_predicciones.grid(row=0, column=0, sticky="nsew")
 tab_predicciones.grid_rowconfigure(0, weight=1)
 tab_predicciones.grid_columnconfigure(0, weight=1)
-
-# Crear una pestaña para Estadísticas
-tab_estadisticas = ttk.Frame(tab_control)
-tab_control.add(tab_estadisticas, text="Estadísticas")
 
 # Cargar tus datos de prueba y realizar la evaluación final
 def cargar_datos_de_prueba():
@@ -86,6 +93,22 @@ text_area_estadisticas.insert(tk.INSERT, report)
 text_area_estadisticas.grid(row=0, column=0, sticky="nsew")
 tab_estadisticas.grid_rowconfigure(0, weight=1)
 tab_estadisticas.grid_columnconfigure(0, weight=1)
+
+# Gráfico de líneas para comparar datos reales y predichos
+fig, ax = plt.subplots(figsize=(8, 5))
+ax.plot(bankdata.index[:len(y_test)], y_test, label='Datos reales', marker='o')
+ax.plot(bankdata.index[:len(y_test)], y_pred[:len(y_test)], label='Datos predichos', marker='x')
+ax.set_xlabel('Índice de Muestra')
+ax.set_ylabel('Resultado')
+ax.legend()
+plt.show()
+
+# Agregar la gráfica al tab de Gráficos
+canvas = FigureCanvasTkAgg(fig, master=tab_graficos)
+canvas_widget = canvas.get_tk_widget()
+canvas_widget.grid(row=0, column=0, sticky="nsew")
+tab_graficos.grid_rowconfigure(0, weight=1)
+tab_graficos.grid_columnconfigure(0, weight=1)
 
 # Añadir las pestañas al control de pestañas
 tab_control.pack(fill="both", expand=True)

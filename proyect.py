@@ -192,6 +192,19 @@ print(bankdatafull.shape)
 print("bank additional full csv(SHAPE 2):")
 print(bankdataadditionalfull.shape)
 
+
+
+# Codificar columnas categóricas usando one-hot encoding
+bank_data_encoded = pd.get_dummies(bankdatafull, columns=['job', 'marital', 'education', 'default', 'housing', 'loan', 'contact', 'month', 'poutcome', 'y'])
+
+# Calcular la media y la desviación estándar
+media = bank_data_encoded.mean()
+desviacion_estandar = bank_data_encoded.std()
+
+# Imprimir la media y la desviación estándar en un formato específico
+print(f"La media es:\n{media}\n\nLa desviación estándar es:\n{desviacion_estandar}")
+
+
 #= GRAFICOS PARA BANKDATAFULL 
 # Lista de columnas numéricas
 cols_num_bankdatafull = ['age', 'balance', 'day', 'duration', 'campaign', 'pdays', 'previous']
